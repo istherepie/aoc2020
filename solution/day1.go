@@ -9,8 +9,6 @@ import (
 
 type Day1 struct {
 	InputData []int64
-	ValueOne  int64
-	ValueTwo  int64
 }
 
 func (d *Day1) Input(data io.Reader) error {
@@ -18,20 +16,40 @@ func (d *Day1) Input(data io.Reader) error {
 
 	for scanner.Scan() {
 		valueAsString := scanner.Text()
-		converted, err := strconv.ParseInt(valueAsString, 10, 32)
+		value64, err := strconv.ParseInt(valueAsString, 10, 32)
 
 		if err != nil {
 			fmt.Println(err)
 			return err
 		}
 
-		d.InputData = append(d.InputData, converted)
+		d.InputData = append(d.InputData, value64)
 	}
 
 	return nil
 }
 
-func (d *Day1) FindCombination() (int64, int64) {
+func (d *Day1) FindTargetValue(initial int64, target int64) (int64, bool) {
+
+	var found bool
+	var match int64
+
+	for _, value := range d.InputData {
+
+		if value == initial {
+			continue
+		}
+
+		if value == target {
+			found = true
+			match = value
+		}
+	}
+
+	return match, found
+}
+
+func (d *Day1) FindCombinationPart1() (int64, int64) {
 
 	var value1 int64
 	var value2 int64
@@ -39,21 +57,58 @@ func (d *Day1) FindCombination() (int64, int64) {
 	for _, initialValue := range d.InputData {
 		targetValue := 2020 - initialValue
 
-		for _, value := range d.InputData {
-			if value != targetValue || value == initialValue {
-				continue
-			}
+		match, found := d.FindTargetValue(initialValue, targetValue)
 
-			value1 = initialValue
-			value2 = value
+		if !found {
+			continue
 		}
+
+		value1 = initialValue
+		value2 = match
+
 	}
 
 	return value1, value2
 }
 
-func (d *Day1) Output() string {
-	value1, value2 := d.FindCombination()
+func (d *Day1) FindCombinationPart2() (int64, int64, int64) {
+
+	var value1 int64
+	var value2 int64
+	var value3 int64
+
+	for _, initialValue := range d.InputData {
+		targetValue := 2020 - initialValue
+
+		for _, nextValue := range d.InputData {
+
+			newTarget := targetValue - nextValue
+
+			if newTarget < 0 {
+				continue
+			}
+
+			match, found := d.FindTargetValue(nextValue, newTarget)
+
+			if !found {
+				continue
+			}
+
+			value1 = initialValue
+			value2 = nextValue
+			value3 = match
+		}
+	}
+
+	return value1, value2, value3
+}
+
+func (d *Day1) Output() {
+	value1, value2 := d.FindCombinationPart1()
 	multiplied := value1 * value2
-	return fmt.Sprintf("COMBINATION IS: %d + %d | ANSWER IS: %d", value1, value2, multiplied)
+	fmt.Printf("[PART1] ANSWER: %d (combination: %d + %d)\n", multiplied, value1, value2)
+
+	value1, value2, value3 := d.FindCombinationPart2()
+	multiplied = value1 * value2 * value3
+	fmt.Printf("[PART2] ANSWER: %d (combination: %d + %d + %d)\n", multiplied, value1, value2, value3)
 }

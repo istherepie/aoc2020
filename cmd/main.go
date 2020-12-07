@@ -25,7 +25,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	output := s.Output()
-
-	fmt.Println(output)
+	s.Output()
 }
