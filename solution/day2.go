@@ -123,9 +123,9 @@ func (d *Day2) ValidatePasswordsPart2() int {
 func (d *Day2) Output() {
 	// Part 1
 	part1Validated := d.ValidatePasswordsPart1()
-	fmt.Printf("[PART1] ANSWER: %d passwords are valid\n", part1Validated)
+	fmt.Printf("=> [PART1] Answer: %d passwords are valid\n", part1Validated)
 
 	// Part 2
 	part2Validated := d.ValidatePasswordsPart2()
-	fmt.Printf("[PART2] ANSWER: %d passwords are valid\n", part2Validated)
+	fmt.Printf("=> [PART2] Answer: %d passwords are valid\n", part2Validated)
 }

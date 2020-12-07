@@ -106,9 +106,9 @@ func (d *Day1) FindCombinationPart2() (int64, int64, int64) {
 func (d *Day1) Output() {
 	value1, value2 := d.FindCombinationPart1()
 	multiplied := value1 * value2
-	fmt.Printf("[PART1] ANSWER: %d (combination: %d + %d)\n", multiplied, value1, value2)
+	fmt.Printf("=> [PART1] Answer: %d (combination: %d + %d)\n", multiplied, value1, value2)
 
 	value1, value2, value3 := d.FindCombinationPart2()
 	multiplied = value1 * value2 * value3
-	fmt.Printf("[PART2] ANSWER: %d (combination: %d + %d + %d)\n", multiplied, value1, value2, value3)
+	fmt.Printf("=> [PART2] Answer: %d (combination: %d + %d + %d)\n", multiplied, value1, value2, value3)
 }
