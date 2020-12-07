@@ -78,7 +78,7 @@ func (d *Day2) Input(data io.Reader) error {
 	return nil
 }
 
-func (d *Day2) ValidatePasswords() int {
+func (d *Day2) ValidatePasswordsPart1() int {
 
 	// Poor mans SET
 	validatedPasswords := make(map[string]struct{})
@@ -96,8 +96,36 @@ func (d *Day2) ValidatePasswords() int {
 	return len(validatedPasswords)
 }
 
-func (d *Day2) Output() {
-	passwordsValidated := d.ValidatePasswords()
+func (d *Day2) ValidatePasswordsPart2() int {
 
-	fmt.Printf("ANSWER: %d passwords are valid\n", passwordsValidated)
+	// Poor mans SET
+	validatedPasswords := make(map[string]struct{})
+
+	for _, passwd := range d.Passwords {
+		first := passwd.Value[passwd.Min-1]
+		last := passwd.Value[passwd.Max-1]
+
+		if string(first) != passwd.Char && string(last) != passwd.Char {
+			continue
+		}
+
+		if string(first) == passwd.Char && string(last) == passwd.Char {
+			continue
+		}
+
+		validatedPasswords[passwd.Value] = Empty{}
+
+	}
+
+	return len(validatedPasswords)
+}
+
+func (d *Day2) Output() {
+	// Part 1
+	part1Validated := d.ValidatePasswordsPart1()
+	fmt.Printf("[PART1] ANSWER: %d passwords are valid\n", part1Validated)
+
+	// Part 2
+	part2Validated := d.ValidatePasswordsPart2()
+	fmt.Printf("[PART2] ANSWER: %d passwords are valid\n", part2Validated)
 }
