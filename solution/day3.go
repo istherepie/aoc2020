@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+type Slope struct {
+	Right int
+	Down  int
+}
+
 type Day3 struct {
 	Patterns []string
 }
@@ -22,18 +27,30 @@ func (d *Day3) Input(data io.Reader) error {
 	return nil
 }
 
-func (d *Day3) FindPath() int {
+func (d *Day3) FindPath(right int, down int) int {
 
 	var count int
 	var position int
 
-	// Skip first
-	for _, pattern := range d.Patterns[1:] {
+	// iteration
+	i := 0
+
+	for {
 
 		// Move 3 to the right
-		position = position + 3
+		position = position + right
 
-		if position > len(pattern) {
+		// Move 1 down
+		i = i + down
+
+		// Finish when last pattern reached
+		if i >= len(d.Patterns) {
+			break
+		}
+
+		pattern := d.Patterns[i]
+
+		if position >= len(pattern) {
 
 			patternRepeat := position/len(pattern) + 1
 			pattern = strings.Repeat(pattern, patternRepeat)
@@ -43,12 +60,43 @@ func (d *Day3) FindPath() int {
 		if string(pattern[position]) == "#" {
 			count++
 		}
+
 	}
 
 	return count
 }
 
 func (d *Day3) Output() {
-	treesEncountered := d.FindPath()
-	fmt.Printf("=> Answer: %d trees encountered\n", treesEncountered)
+
+	// Part 1
+	treesEncountered := d.FindPath(3, 1)
+
+	// Part 2
+	var results []int
+
+	slopes := []Slope{
+		Slope{1, 1},
+		Slope{3, 1},
+		Slope{5, 1},
+		Slope{7, 1},
+		Slope{1, 2},
+	}
+
+	for _, slope := range slopes {
+		treesEncountered := d.FindPath(slope.Right, slope.Down)
+		results = append(results, treesEncountered)
+	}
+
+	var treesMultiplied int
+	for _, result := range results {
+		if treesMultiplied <= 0 {
+			treesMultiplied = result
+			continue
+		}
+
+		treesMultiplied = treesMultiplied * result
+	}
+
+	fmt.Printf("=> [PART1] Answer: %d trees encountered\n", treesEncountered)
+	fmt.Printf("=> [PART2] Answer: %d (Trees encountered: %d)\n", treesMultiplied, results)
 }
