@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"sort"
 )
 
 // BF FF BB F RRR
@@ -110,9 +111,8 @@ func (d *Day5) Eliminate(data []int, lower int, upper int) int {
 	return upper - 1
 }
 
-func (d *Day5) Output() {
-
-	var highestSeatNumber int
+func (d *Day5) GetAvailableSeats() []int {
+	var availableSeats []int
 
 	for _, pass := range d.BoardingPasses {
 
@@ -123,11 +123,66 @@ func (d *Day5) Output() {
 		// In this example, the seat has ID 44 * 8 + 5 = 357.
 		currentSeat := row*8 + column
 
-		if currentSeat > highestSeatNumber {
-			highestSeatNumber = currentSeat
-		}
+		availableSeats = append(availableSeats, currentSeat)
 
 	}
 
-	fmt.Printf("=> Answer: The highest seat number is: %d\n", highestSeatNumber)
+	return availableSeats
+}
+
+func (d *Day5) GetHighestSeatNumber(seatNumbers []int) int {
+	var highestSeatNumber int
+
+	for _, seatNumber := range seatNumbers {
+		if seatNumber > highestSeatNumber {
+			highestSeatNumber = seatNumber
+		}
+	}
+
+	return highestSeatNumber
+}
+
+func (d *Day5) GetMissingSeatNumber(seatNumbers []int) int {
+
+	var missing int
+	sort.Ints(seatNumbers)
+
+	for i := 0; i <= len(seatNumbers); i++ {
+
+		// Skip first
+		if i == 0 {
+			continue
+		}
+
+		// ... and last
+		if i == len(seatNumbers)-1 {
+			break
+		}
+
+		previous := seatNumbers[i-1]
+		current := seatNumbers[i]
+		next := seatNumbers[i+1]
+
+		// If the next seat is not missing
+		// No point in checking
+		if previous == current-1 && next == current+1 {
+			continue
+		}
+
+		missing = current - 1
+	}
+
+	return missing
+}
+
+func (d *Day5) Output() {
+
+	availableSeats := d.GetAvailableSeats()
+
+	highestSeatNumber := d.GetHighestSeatNumber(availableSeats)
+
+	missingSeatNumber := d.GetMissingSeatNumber(availableSeats)
+
+	fmt.Printf("=> [PART1] Answer: The highest seat number is: %d\n", highestSeatNumber)
+	fmt.Printf("=> [PART2] Answer: The missing seat number is: %d\n", missingSeatNumber)
 }
