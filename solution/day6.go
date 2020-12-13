@@ -6,29 +6,53 @@ import (
 	"io"
 )
 
+type Group struct {
+	Size    int
+	Answers map[string]int
+}
+
+func (g *Group) Total() int {
+	return len(g.Answers)
+}
+
+func (g *Group) Unanimous() int {
+	var total int
+	for _, amount := range g.Answers {
+		if amount != g.Size {
+			continue
+		}
+
+		total++
+	}
+
+	return total
+}
+
 type Day6 struct {
-	Answers []map[string]struct{}
+	Answers []Group
 }
 
 func (d *Day6) Input(data io.Reader) error {
 	r := bufio.NewReader(data)
 
-	var group map[string]struct{}
+	var group Group
 
 	for {
 		line, _, err := r.ReadLine()
 
-		if group == nil {
-			group = make(map[string]struct{})
-		}
-
 		for _, answer := range line {
-			group[string(answer)] = Empty{}
+
+			if group.Answers == nil {
+				group.Answers = make(map[string]int)
+			}
+			group.Answers[string(answer)]++
 		}
 
 		if len(line) == 0 || err == io.EOF {
 			d.Answers = append(d.Answers, group)
-			group = nil
+			group = Group{}
+		} else {
+			group.Size++
 		}
 
 		if err == io.EOF {
@@ -41,11 +65,14 @@ func (d *Day6) Input(data io.Reader) error {
 
 func (d *Day6) Output() {
 
-	var sumOfAnswers int
+	var totalSum int
+	var unanimousSum int
 
-	for _, answer := range d.Answers {
-		sumOfAnswers += len(answer)
+	for _, group := range d.Answers {
+		totalSum += group.Total()
+		unanimousSum += group.Unanimous()
 	}
 
-	fmt.Printf("=> Answer: Sum of answers is %d\n", sumOfAnswers)
+	fmt.Printf("=> [PART1] Answer: Sum of answers is %d\n", totalSum)
+	fmt.Printf("=> [PART2] Answer: Sum of unanimous answers is %d\n", unanimousSum)
 }
