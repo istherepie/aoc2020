@@ -3,7 +3,7 @@
 Oh dear, will I be able to do this ?
 
 
-![](https://media.giphy.com/media/d17nhnqHflmUM/giphy.gif)
+![](https://media.giphy.com/media/d17nhnqHflmUM/giphy-downsized.gif)
 
 ## Reference
 
